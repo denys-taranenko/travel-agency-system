@@ -1,100 +1,88 @@
-# Travel agency. Spring Project
+# Travel Agency — Spring Boot Project
 
-The purpose of this task is to check your knowledge in Java and Spring.
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)](https://spring.io/projects/spring-boot)
+[![Security](https://img.shields.io/badge/Security-JWT%2FOAuth2-blue)](https://spring.io/projects/spring-security)
+[![I18n](https://img.shields.io/badge/I18n-English%2FUkrainian-yellowgreen)](https://www.thymeleaf.org/)
 
-Duration: **18** hours
-
-## Description
-
-In this task, you will implement "Travel Agency Service" using MVC pattern. All the main classes are available and waiting
-for you in the appropriate folders.
+A full-featured travel booking platform with secure authentication, payment processing, and role-based administration.
 
 The class diagram of the Domain model is shown in the figure below:
 
 ![diagram.png](TravelAgency.png)
 
-The travel agency has a catalogue of tours. `Authorized user` can select tours by:
-- type (rest, excursion, shopping)
-- by price
-- by transfer type (car, plane, ship)
-- by hotel type;
+## ✨ Key Features
 
-> Note: only registered users can select and order tours.
+### 🔐 Advanced Authentication
 
-`Tour` must have:
-1. Title
-2. Description
-3. Price
-4. Type of tour
-5. Type of transfer
-6. Hotel type
-7. Status (registered, paid, canceled)
-8. Arrival ate
-9. Eviction date
+- **OAuth2 Login** via Google and GitHub
+- JWT token-based authentication
+- Password recovery system (Forgot Password flow)
+- Role-based access control:
+    - `USER`: Browse and book tours
+    - `MANAGER`: Mark tours as "hot", update booking statuses, order management
+    - `ADMIN`: Full CRUD operations, user management
+- Fully secured with **HTTPS** (TLS 1.3)
 
-Tour can also be hot.
+### 💳 Payment Integration
 
-`User` must have personal account, which contains information about him (name, surname, balance, email, [optional] password), as well as a list of selected tours and their current status.
+- Secure payment processing for bookings
+- Order status tracking:
+    - `REGISTERED` → `APPROVED` → `PAID`
+    - `CANCELED` status flow
 
-### Permissions
+### 🌍 Multilingual Support
 
-`Manager`
-- defines tour as `hot`. These tours are always displayed at the top of the list.
-- transfer the status of the tour from `registered` to `paid` or `canceled`
+- Full internationalization (i18n):
+    - English (default)
+    - Ukrainian
+- Dynamic language switching
 
-`Administrator` has all manager functionality, plus:
-- add/delete tour
-- change tour information (all fields)
-- block/unblock user
+### 🏝️ Tour Management
 
-## Commands
+- Advanced filtering:
+- "Hot deals" promoted by managers
+- Detailed tour view with:
+- Descriptions
+- Hotel ratings
+- Transfer types
+- Date ranges
 
-### Run project
+## 🛠️ Technology Stack
 
-```mvn spring-boot:run```
+| Layer                | Technologies                                                    |
+|----------------------|-----------------------------------------------------------------|
+| **Core Backend**     | Spring Boot 3, Spring MVC, Spring Data JPA, Hibernate           |
+| **Security**         | JWT Authentication, OAuth2 (Google/GitHub), Password Reset Flow |
+| **Database**         | PostgreSQL with Soft Delete implementation                      |
+| **Frontend**         | Thymeleaf, Bootstrap 5, jQuery (AJAX for dynamic content)       |
+| **Architecture**     | DTO Pattern (with MapStruct), Layered Architecture              |
+| **Payment**          | Stripe API integration for secure payments                      |
+| **Order Management** | Full order lifecycle (REGISTERED → PAID → APPROVED/CANCELED)    |
+| **DevOps**           | Maven, Embedded Tomcat                                          |
+| **Quality**          | Global Exception Handler, AOP Logging, Input Validation         |
 
-## Structure
+## 📸 Screenshots Gallery
 
-Your project is organized into several packages. Here's a brief overview of each:
+<div align="center">
+  <img src="screenshots/about_us.png" width="30%" alt="About Us" title="About Us">
+  <img src="screenshots/login.png" width="30%" alt="Login" title="Login">
+  <img src="screenshots/forgot_password.png" width="30%" alt="Forgot Password" title="Forgot Password">
+  <img src="screenshots/register.png" width="30%" alt="Register" title="Register">
+  <img src="screenshots/oauth2_google.png" width="30%" alt="OAuth2 Google" title="OAuth2 Google">
+  <img src="screenshots/oauth2_git.png" width="30%" alt="OAuth2 GitHub" title="OAuth2 GitHub">
+</div>
 
-- All configuration classes are located here.
-
-- **`auth`**: Contains files related to authentication.
-- **`config`**: Contains configuration files for application.
-- **`controller`**: Contains implementations of all declared controllers.
-- **`dto`**: Contains DTO files.
-- **`exeption`**: Contains custom exceptions and error handler.
-- **`mapper`**: Contains Mapper files.
-- **`model`**: Contains entities files.
-- **`repository`**: Contains repository files.
-- **`service`**: Contains service interfaces and their implementations.
-- **`token`**: Contains JWT token related files.
-
-## Requirements
-
-You should use and successfully implement next points:
-
-- `Spring Data JPA`
-- `Spring Security`
-- `Internationalization and Localization`
-- `Validation`
-- `Error handling`
-
-## Nice to have
-
-- `Logging`
-- `Pagination and sorting`
-- `Other Spring technologies`
-- `Swagger API`
-- `Thymeleaf`
-
-## Recommendations
-
-- Use `Lombok`
-- Use tools like `Postman` or `Insomnia`
-- Use `ModelMapper`
-
-## Special message
-
-- Not forget to improvise and try to use different approaches while implementing your solution.
-- Time is limited to 18 hours. Don't waste your time.
+<details>
+<summary>🔍 Show more screenshots</summary>
+<div align="center">
+<img src="screenshots/vouchers.png" width="30%" alt="Voucher Listing Page"> 
+<img src="screenshots/payment.png" width="30%" alt="Stripe Payment Flow"> 
+<img src="screenshots/user_info.png" width="30%" alt="User Profile"> 
+<img src="screenshots/user_edit.png" width="30%" alt="User Settings"> 
+<img src="screenshots/admin_panel.png" width="30%" alt="Admin Dashboard"> 
+<img src="screenshots/manager_request.png" width="30%" alt="Manager Request"> 
+<img src="screenshots/order_history.png" width="30%" alt="Order Management">
+<img src="screenshots/soft_delete.png" width="30%" alt="Archive Vouchers">
+<img src="screenshots/user_management.png" width="30%" alt="User Management">
+</div>
+</details>
