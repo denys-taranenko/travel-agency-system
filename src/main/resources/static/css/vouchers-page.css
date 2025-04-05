@@ -1,0 +1,40 @@
+.image-container {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.form-check-input:not(:checked) + label i {
+    color: black;
+}
+
+.form-check-input:checked + label i {
+    color: red;
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.card-link:hover {
+    color: inherit;
+}
+
+.star {
+    color: #FFD700;
+    font-size: 18px;
+    text-shadow: 1px 1px 2px black;
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.vouchers.tab}">Management | Vouchers</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/management-panel-vouchers-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div th:if="${message}" class="container-sm">
+    <div th:if="${message == 'deleted'}"
+         class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto" role="alert"
+         style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+        <strong th:text="#{thymeleaf.success}">Success!</strong>
+        <span th:text="#{thymeleaf.success.voucher.deleted}">Voucher successfully deleted!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${message == 'restore'}"
+         class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto" role="alert"
+         style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+        <strong th:text="#{thymeleaf.success}">Success!</strong>
+        <span th:text="#{thymeleaf.success.voucher.restored}">Voucher successfully restored!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<div class="container" style="width: 100%; padding-top: 80px;">
+    <div class="row mb-4">
+        <h2 class="text-center" th:text="#{thymeleaf.vouchers}">Vouchers</h2>
+    </div>
+
+    <form method="get" class="mb-3">
+        <div class="row g-3">
+            <div class="col-auto">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="search" name="search" class="form-control text-center"
+                           th:placeholder="#{thymeleaf.voucher.search}" value=""
+                           style="width: 250px;">
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-globe2"></i></span>
+                    <select name="tourType" class="form-control" th:value="${tourType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.tour.type}">Select Tour Type
+                        </option>
+                        <option th:each="type : ${tourTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == tourType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-car-front-fill"></i></span>
+                    <select name="transferType" class="form-control" th:value="${transferType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.transfer.type}">Select Transfer
+                            Type
+                        </option>
+                        <option th:each="type : ${transferTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == transferType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-house-door-fill"></i></span>
+                    <select name="hotelType" class="form-control" th:value="${hotelType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.hotel.type}">Select Hotel Type
+                        </option>
+                        <option th:each="type : ${hotelTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == hotelType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-auto d-flex align-items-center">
+                <input type="checkbox" name="hotStatus" th:checked="${hotStatus}" id="hotStatus" class="btn-check"
+                       autocomplete="off">
+                <label class="btn" for="hotStatus">
+                    <i class="bi bi-fire text-danger"></i>
+                </label>
+            </div>
+
+            <div class="col-auto d-flex align-items-center">
+                <button type="submit" class="btn btn-primary btn-wide">
+                    <i class="bi bi-check"></i>
+                </button>
+            </div>
+
+            <div class="col-auto d-flex align-items-center">
+                <a th:href="@{/management/vouchers}" class="btn btn-secondary btn-wide">
+                    <i class="bi bi-x"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <table class="table">
+            <thead class="text-center">
+            <tr>
+                <th scope="col">#</th>
+                <th>
+                    <a th:href="@{/management/vouchers(sortField='title', sortDirection=${sortField == 'title' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'title' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.title}">
+                        Title
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'title' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/vouchers(sortField='price', sortDirection=${sortField == 'price' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'price' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.price}">
+                        Price
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'price' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/vouchers(sortField='tourType', sortDirection=${sortField == 'tourType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'tourType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.tour.type}">
+                        Tour Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'tourType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/vouchers(sortField='transferType', sortDirection=${sortField == 'transferType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'transferType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.transfer.type}">
+                        Transfer Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'transferType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/vouchers(sortField='hotelType', sortDirection=${sortField == 'hotelType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'hotelType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.hotel.type}">
+                        Hotel Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'hotelType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th scope="col" th:text="#{thymeleaf.voucher.hot.status}">Voucher Hot Status</th>
+                <th scope="col" th:text="#{thymeleaf.actions}">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody class="text-center">
+            <tr th:each="voucher, elem : ${voucherPage}">
+                <td th:text="${elem.count}"></td>
+
+                <td th:title="${voucher.title}">
+                    <a th:href="@{/vouchers/info/{id}(id=${voucher.id})}"
+                       th:text="${#strings.length(voucher.title) > 20 ? #strings.substring(voucher.title, 0, 20) + '...' : voucher.title}"
+                       class="text-decoration-none">
+                    </a>
+                </td>
+
+                <td th:text="${voucher.price}"></td>
+                <td th:text="${#strings.replace(voucher.tourType, '_', ' ')}"></td>
+                <td th:text="${#strings.replace(voucher.transferType, '_', ' ')}"></td>
+
+                <td class="star">
+                    <th:block th:switch="${voucher.hotelType}">
+                        <span th:case="ONE_STAR">★</span>
+                        <span th:case="TWO_STARS">★★</span>
+                        <span th:case="THREE_STARS">★★★</span>
+                        <span th:case="FOUR_STARS">★★★★</span>
+                        <span th:case="FIVE_STARS">★★★★★</span>
+                        <span th:case="*">N/A</span>
+                    </th:block>
+                </td>
+
+                <td>
+                    <i class="bi" th:class="${voucher.hotStatus} ? 'bi-fire text-danger' : 'bi-fire text-muted'"></i>
+                </td>
+
+                <td>
+                    <a sec:authorize="hasRole('ROLE_MANAGER')" th:href="@{/management/change/{id}(id=${voucher.id})}"
+                       class="btn btn-info">
+                        <i class="bi bi-pencil"></i>
+                        <span th:text="#{thymeleaf.change.button}">Change</span>
+                    </a>
+
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/management/edit/{id}(id=${voucher.id})}"
+                       class="btn btn-info">
+                        <i class="bi bi-pencil"></i>
+                        <span th:text="#{thymeleaf.edit.button}">Edit</span>
+                    </a>
+
+                    <a href="#"
+                       th:href="${#authorization.expression('hasRole(''ROLE_MANAGER'')') ? '#' : '/delete-url'}"
+                       class="btn btn-danger"
+                       th:classappend="${#authorization.expression('hasRole(''ROLE_MANAGER'')') ? 'disabled-link' : ''}"
+                       th:style="${#authorization.expression('hasRole(''ROLE_MANAGER'')') ? 'opacity: 0.5; pointer-events: none;' : ''}"
+                       data-bs-toggle="modal"
+                       th:attr="data-bs-target='#deleteModal-' + ${voucher.id}">
+                        <i class="bi bi-x"></i> <span th:text="#{thymeleaf.delete.button}">Delete</span>
+                    </a>
+
+                    <div th:id="'deleteModal-' + ${voucher.id}" class="modal fade" tabindex="-1"
+                         aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel"
+                                        th:text="#{thymeleaf.voucher.delete.confirm}">Confirm deletion</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" th:text="#{thymeleaf.voucher.delete.question}">
+                                    Are you sure you want to delete this voucher?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            th:text="#{thymeleaf.close.button}">Close
+                                    </button>
+                                    <a th:href="@{/management/delete/{id}(id=${voucher.id})}"
+                                       class="btn btn-danger"
+                                       th:text="#{thymeleaf.delete.button}">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=0, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.first}">First</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=${currentPage - 2}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.previous}">Previous</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=0, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}">1</a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage > 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                th:if="${i > 1 && i < totalPages}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=${i - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${i}"></a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${totalPages}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=${currentPage}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.next}">Next</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/vouchers(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, hotStatus=${hotStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.last}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

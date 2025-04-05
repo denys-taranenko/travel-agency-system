@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.archive.tab}">Management | Archive</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/management-panel-archive-vouchers-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="container" style="width: 100%; padding-top: 80px;">
+    <div class="row mb-4">
+        <h2 class="text-center" th:text="#{thymeleaf.archive.title}">Archive Vouchers</h2>
+    </div>
+
+    <form method="get" class="mb-3">
+        <div class="row g-3">
+            <div class="col-auto">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="search" name="search" class="form-control text-center"
+                           th:placeholder="#{thymeleaf.voucher.search}" value=""
+                           style="width: 250px;">
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-globe2"></i></span>
+                    <select name="tourType" class="form-control" th:value="${tourType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.tour.type}">Select Tour Type
+                        </option>
+                        <option th:each="type : ${tourTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == tourType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-car-front-fill"></i></span>
+                    <select name="transferType" class="form-control" th:value="${transferType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.transfer.type}">Select Transfer
+                            Type
+                        </option>
+                        <option th:each="type : ${transferTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == transferType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-house-door-fill"></i></span>
+                    <select name="hotelType" class="form-control" th:value="${hotelType}">
+                        <option value="" disabled selected th:text="#{thymeleaf.select.hotel.type}">Select Hotel Type
+                        </option>
+                        <option th:each="type : ${hotelTypes}"
+                                th:value="${type}"
+                                th:text="${type.getFormattedName()}"
+                                th:selected="${type.name() == hotelType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-auto d-flex align-items-center">
+                <button type="submit" class="btn btn-primary btn-wide">
+                    <i class="bi bi-check"></i>
+                </button>
+            </div>
+
+            <div class="col-auto d-flex align-items-center">
+                <a th:href="@{/management/archive}" class="btn btn-secondary btn-wide">
+                    <i class="bi bi-x"></i>
+                </a>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="row">
+        <table class="table">
+            <thead class="text-center">
+            <tr>
+                <th scope="col">#</th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='title', sortDirection=${sortField == 'title' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'title' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.title}">
+                        Title
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'title' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='price', sortDirection=${sortField == 'price' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'price' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.price}">
+                        Price
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'price' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='tourType', sortDirection=${sortField == 'tourType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'tourType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.tour.type}">
+                        Tour Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'tourType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='transferType', sortDirection=${sortField == 'transferType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'transferType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.transfer.type}">
+                        Transfer Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'transferType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='hotelType', sortDirection=${sortField == 'hotelType' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'hotelType' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.hotel.type}">
+                        Hotel Type
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'hotelType' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th>
+                    <a th:href="@{/management/archive(sortField='status', sortDirection=${sortField == 'status' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                       class="sortable-header"
+                       th:classappend="${sortField == 'status' ? 'active-sort' : ''}"
+                       th:text="#{thymeleaf.voucher.status}">
+                        Status
+                    </a>
+                    <i class="bi"
+                       th:classappend="${sortField == 'status' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                       style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+                </th>
+                <th scope="col" th:text="#{thymeleaf.actions}">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody class="text-center">
+            <tr th:each="voucher, elem : ${voucherPage}"
+                th:classappend="${voucher.status == 'EXPIRED' ? 'expired' : 'deleted'}">
+
+                <td th:text="${elem.count}"></td>
+
+                <td th:title="${voucher.title}">
+                    <a th:href="@{/vouchers/info/{id}(id=${voucher.id})}"
+                       th:text="${#strings.length(voucher.title) > 20 ? #strings.substring(voucher.title, 0, 20) + '...' : voucher.title}"
+                       class="text-decoration-none">
+                    </a>
+                </td>
+
+                <td th:text="${voucher.price}"></td>
+                <td th:text="${#strings.replace(voucher.tourType, '_', ' ')}"></td>
+                <td th:text="${#strings.replace(voucher.transferType, '_', ' ')}"></td>
+
+                <td class="star">
+                    <th:block th:switch="${voucher.hotelType}">
+                        <span th:case="ONE_STAR">★</span>
+                        <span th:case="TWO_STARS">★★</span>
+                        <span th:case="THREE_STARS">★★★</span>
+                        <span th:case="FOUR_STARS">★★★★</span>
+                        <span th:case="FIVE_STARS">★★★★★</span>
+                        <span th:case="*">N/A</span>
+                    </th:block>
+                </td>
+
+                <td th:text="${voucher.status}"></td>
+
+                <td>
+                    <a th:if="${voucher.status == 'DELETED'}" th:href="@{/management/restore/{id}(id=${voucher.id})}"
+                       class="btn btn-success">
+                        <i class="bi bi-cloud-download"></i>
+                        <span th:text="#{thymeleaf.restore.button}">Restore</span>
+                    </a>
+
+                    <a th:if="${voucher.status == 'EXPIRED'}" th:href="@{/management/edit/{id}(id=${voucher.id})}"
+                       class="btn btn-info">
+                        <i class="bi bi-pencil-square"></i>
+                        <span th:text="#{thymeleaf.change.button}">Change</span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=0, size=${voucherPage.size}, search=${search}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.first}">First</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=${currentPage - 2}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.previous}">Previous</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=0, size=${voucherPage.size}, search=${search}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}">1</a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage > 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                th:if="${i > 1 && i < totalPages}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=${i - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${i}"></a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${totalPages}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=${currentPage}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.next}">Next</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/archive(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, hotelType=${hotelType}, status=${status}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.last}">Last</a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

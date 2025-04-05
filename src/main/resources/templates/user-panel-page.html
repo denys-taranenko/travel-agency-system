@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.users.tab}">Management | Users</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/user-pane-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div th:if="${message}" class="container-sm">
+    <div th:if="${message == 'changeStatus'}"
+         class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto" role="alert"
+         style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+        <strong th:text="#{thymeleaf.success}">Success!</strong>
+        <span th:text="#{thymeleaf.success.user.status}">Account status successfully changed!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<div class="container" style="max-width: 1200px; padding-top: 100px;">
+    <h2 class="mb-4 text-center" th:text="#{thymeleaf.users.title}">Users</h2>
+
+    <form method="get" class="mb-4">
+        <div class="row">
+
+            <div class="col-auto mt-4">
+                <input type="text" id="search" name="search" class="form-control text-center"
+                       th:placeholder="#{thymeleaf.users.search}" value=""
+                       style="width: 400px;">
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mt-4" th:text="#{thymeleaf.search.button}">Search</button>
+            </div>
+
+            <div class="col-auto ms-auto mt-4">
+                <select id="accountStatus" name="accountStatus" class="form-select text-center" style="width: 200px;">
+                    <option value="" th:selected="${accountStatus == null}" disabled
+                            th:text="#{thymeleaf.status.title}">Account Status
+                    </option>
+                    <option value="true" th:selected="${accountStatus == true}"
+                            th:text="#{thymeleaf.users.status.blocked}">Blocked
+                    </option>
+                    <option value="false" th:selected="${accountStatus == false}"
+                            th:text="#{thymeleaf.users.status.active}">Active
+                    </option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mt-4" th:text="#{thymeleaf.apple.button}">Apply</button>
+                <button type="button" class="btn btn-secondary mt-4 ms-3" onclick="window.location.href='/users';"
+                        th:text="#{thymeleaf.clear.button}">Clear
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{/users(sortField='username', sortDirection=${sortField == 'username' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                   class="sortable-header"
+                   th:classappend="${sortField == 'username' ? 'active-sort' : ''}"
+                   th:text="#{thymeleaf.user.username}">
+                    Username
+                </a>
+                <i class="bi"
+                   th:classappend="${sortField == 'username' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                   style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+            </th>
+            <th th:text="#{thymeleaf.user.phone.number}">Phone Number</th>
+            <th th:text="#{thymeleaf.user.email}">Email</th>
+            <th>
+                <a th:href="@{/users(sortField='accountStatus', sortDirection=${sortField == 'accountStatus' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                   class="sortable-header"
+                   th:classappend="${sortField == 'accountStatus' ? 'active-sort' : ''}"
+                   th:text="#{thymeleaf.status.title}">
+                    Account Status
+                </a>
+                <i class="bi"
+                   th:classappend="${sortField == 'accountStatus' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                   style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+            </th>
+            <th th:text="#{thymeleaf.actions}">Actions</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, elem : ${userPage}">
+            <td th:title="${user.username}">
+                <a th:href="@{/users/info/{id}(id=${user.id})}" class="text-decoration-none"
+                   th:text="${user.username}">
+                </a>
+            </td>
+
+            <td th:text="${user.phoneNumber}"></td>
+            <td th:text="${user.email}"></td>
+
+            <td>
+                <span th:class="${user.accountStatus ? 'bi bi-lock text-danger' : 'bi bi-check-circle text-success'}"
+                      th:title="${user.accountStatus ? 'Blocked' : 'Active'}"></span>
+            </td>
+
+            <td>
+                <span th:title="${user.accountStatus ? 'Blocked' : 'Active'}"></span>
+                <a href="#" class="btn btn-sm col-8"
+                   th:classappend="${user.accountStatus ? 'btn-danger' : 'btn-success'}"
+                   th:data-bs-toggle="modal"
+                   th:data-bs-target="'#blockModal' + ${user.id}"
+                   th:with="buttonText=${user.accountStatus} ? #{thymeleaf.users.button.unblock} : #{thymeleaf.users.button.block}"
+                   th:text="${buttonText}"
+                   th:style="${#authorization.expression('hasRole(''ROLE_MANAGER'')') || (user.id == #authentication.principal.id)}
+                              ? 'opacity: 0.5; pointer-events: none;' : ''">
+                </a>
+            </td>
+
+            <div class="modal fade" th:id="'blockModal' + ${user.id}" tabindex="-1" aria-labelledby="blockModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="blockModalLabel"
+                                th:with="modalTitle=${user.accountStatus} ? #{thymeleaf.users.modal.unblock.title} : #{thymeleaf.users.modal.block.title}"
+                                th:text="${modalTitle}">
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body"
+                             th:with="modalBody=${user.accountStatus} ? #{thymeleaf.users.modal.unblock.body} : #{thymeleaf.users.modal.block.body}"
+                             th:text="${modalBody}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    th:text="#{thymeleaf.cancel.button}"></button>
+                            <a th:href="@{/users/status/{id}(id=${user.id})}" class="btn btn-danger"
+                               th:with="buttonText=${user.accountStatus} ? #{thymeleaf.users.button.unblock} : #{thymeleaf.users.button.block}"
+                               th:text="${buttonText}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/users(page=0, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.first}">First</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/users(page=${currentPage - 2}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.previous}">Previous</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/users(page=0, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}">1</a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage > 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                th:if="${i > 1 && i < totalPages}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/users(page=${i - 1}, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${i}"></a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/users(page=${totalPages - 1}, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${totalPages}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/users(page=${currentPage}, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.next}">Next</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/users(page=${totalPages - 1}, size=${userPage.size}, accountStatus=${accountStatus}, search=${search}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.last}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

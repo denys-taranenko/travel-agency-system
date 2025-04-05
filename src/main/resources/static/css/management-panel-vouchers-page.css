@@ -1,0 +1,43 @@
+.btn-check:not(:checked) + label {
+    background-color: grey;
+    border-color: grey;
+    color: black;
+}
+
+.btn-check:not(:checked) + label i {
+    color: black;
+}
+
+.btn-check:checked + label {
+    background-color: #f1e05a !important;
+    border-color: red !important;
+    color: red;
+}
+
+.btn-check:checked + label i {
+    color: red;
+}
+
+
+.btn-check:not(:checked) + label:hover {
+    background-color: darkgrey;
+    border-color: darkgrey;
+}
+
+.star {
+    color: #FFD700;
+    font-size: 18px;
+    text-shadow: 1px 1px 2px black;
+}
+
+.sortable-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sortable-header:hover {
+    text-decoration: none;
+}

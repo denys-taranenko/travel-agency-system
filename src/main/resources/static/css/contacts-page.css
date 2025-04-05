@@ -1,0 +1,28 @@
+.contact-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    height: 100%;
+}
+
+.contact-card-map {
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    height: 100%;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+.contact-icon {
+    font-size: 1.5rem;
+    color: #007bff;
+    margin-right: 10px;
+}
+.social-icons {
+    margin-top: 100px;
+}

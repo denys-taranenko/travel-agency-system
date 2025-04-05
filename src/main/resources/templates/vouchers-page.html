@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.vouchers}">Vouchers</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/vouchers-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="container" style="width: 100%; padding-top: 50px;">
+    <h2 class="text-center" th:text="#{thymeleaf.vouchers}">Vouchers</h2>
+</div>
+<div class="container-fluid mt-4" style="max-width: 1400px;">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                <h5 class="text-center" th:text="#{thymeleaf.apple.filters}">Filters</h5>
+                <form method="get" class="mb-3">
+                    <div class="mb-3">
+                        <input type="number" name="minPrice" id="minPrice" class="form-control"
+                               th:placeholder="#{thymeleaf.min.price}" th:value="${minPrice}" min="0" step="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="number" name="maxPrice" id="maxPrice" class="form-control"
+                               th:placeholder="#{thymeleaf.max.price}" th:value="${maxPrice}" min="0" step="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <select name="tourType" class="form-control" th:value="${tourType}">
+                            <option value="" disabled selected th:text="#{thymeleaf.select.tour.type}">Select Tour
+                                Type
+                            </option>
+                            <option th:each="type : ${tourTypes}"
+                                    th:value="${type}"
+                                    th:text="${type.getFormattedName()}"
+                                    th:selected="${type.name() == tourType}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <select name="transferType" class="form-control" th:value="${transferType}">
+                            <option value="" disabled selected th:text="#{thymeleaf.select.transfer.type}">Select
+                                Transfer Type
+                            </option>
+                            <option th:each="type : ${transferTypes}"
+                                    th:value="${type}"
+                                    th:text="${type.getFormattedName()}"
+                                    th:selected="${type.name() == transferType}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <select name="hotelType" class="form-control" th:value="${hotelType}">
+                            <option value="" disabled selected th:text="#{thymeleaf.select.hotel.type}">Select Hotel
+                                Type
+                            </option>
+                            <option th:each="type : ${hotelTypes}"
+                                    th:value="${type}"
+                                    th:text="${type.getFormattedName()}"
+                                    th:selected="${type.name() == hotelType}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="hotStatus" id="hotStatus" th:checked="${hotStatus}"
+                               class="form-check-input">
+                        <label for="hotStatus" class="form-check-label">
+                            <i class="bi bi-fire"></i>
+                            <span th:text="#{thymeleaf.voucher.hot.status}">Hot Status</span>
+                        </label>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary w-100 me-2">
+                            <i class="bi bi-check"></i>
+                            <span th:text="#{thymeleaf.apple.filters.button}">Apply Filters</span>
+                        </button>
+                        <a th:href="@{/vouchers}" class="btn btn-secondary w-100 ms-2">
+                            <i class="bi bi-x"></i>
+                            <span th:text="#{thymeleaf.clear.button}">Clear</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col" th:each="voucher : ${voucherPage.content}">
+                    <a th:href="@{/vouchers/info/{voucherId}(voucherId=${voucher.id})}" class="card-link">
+                        <div class="card">
+                            <div th:switch="${voucher.tourType}">
+                                <div th:case="'HEALTH'" class="image-container">
+                                    <img th:src="@{'https://ik.imgkit.net/3vlqs5axxjf/TAW/ik-seo/uploadedImages/Professional_Development/Opinion/WellnessTravelReport_Hero/The-Wellness-Tourism-Market-Is-Expected-to-Make-Mo.jpg?tr=w-1008%2Ch-567%2Cfo-auto'}"
+                                         alt="Health Tour">
+                                </div>
+                                <div th:case="'SPORTS'" class="image-container">
+                                    <img th:src="@{'https://slotbajack.wordpress.com/wp-content/uploads/2020/10/e0b8ade0b8ade0b881e0b881e0b8b3e0b8a5e0b8b1e0b887e0b881e0b8b2e0b8a2e0b982e0b894e0b8a2e0b881e0b8b2e0b8a3e0b89be0b8b1e0b988e0b899e0b888e0b8b1e0b881e0b8a3e0b8a2e0b8b2e0b899.jpg?w=700'}"
+                                         alt="Sports Tour">
+                                </div>
+                                <div th:case="'LEISURE'" class="image-container">
+                                    <img th:src="@{'https://cdn.palisis.com/d0baef12-1663-43b9-831a-b62c99152cef.jpg'}"
+                                         alt="Leisure Tour">
+                                </div>
+                                <div th:case="'SAFARI'" class="image-container">
+                                    <img th:src="@{'https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1200,h_630/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/ajwzswvh8smjkdb3hjqt/Kanchanaburi%20Safari%20Park%20Day%20Tour%20from%20Bangkok%20by%20AK%20Travel.jpg'}"
+                                         alt="Safari Tour">
+                                </div>
+                                <div th:case="'WINE'" class="image-container">
+                                    <img th:src="@{'https://img.rezdy.com/PRODUCT_IMAGE/57963/4b2cf491dbb74ed3842a144425e8d630niagara_wine_festival_lg.jpg'}"
+                                         alt="Wine Tour">
+                                </div>
+                                <div th:case="'ECO'" class="image-container">
+                                    <img th:src="@{'https://res.cloudinary.com/worldpackers/image/upload/c_fill,f_auto,q_auto,w_1024/v1/guides/article_cover/bryimngrkwhszfoj8ohk?_a=BACADKGT'}"
+                                         alt="Eco Tour">
+                                </div>
+                                <div th:case="'ADVENTURE'" class="image-container">
+                                    <img th:src="@{'https://www.libertytravel.com/sites/default/files/styles/full_size/public/adventure-hero.jpg?itok=J_WkTnzH'}"
+                                         alt="Adventure Tour">
+                                </div>
+                                <div th:case="'CULTURAL'" class="image-container">
+                                    <img th:src="@{'https://mettavoyage.com/wp-content/uploads/2022/06/hoi-an-cultural-tourism.jpg'}"
+                                         alt="Cultural Tour">
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${voucher.title}"></h5>
+                                <p class="card-text">
+                                    <strong th:text="#{thymeleaf.voucher.price} + ':'">Price:</strong>
+                                    <span th:text="${voucher.price}"></span><span>$</span><br>
+                                    <strong th:text="#{thymeleaf.voucher.tour.type} + ':'">Tour Type:</strong>
+                                    <span th:text="${#strings.replace(voucher.tourType, '_', ' ')}"></span><br>
+                                    <strong th:text="#{thymeleaf.voucher.transfer.type} + ':'">Transfer Type:</strong>
+                                    <span th:text="${#strings.replace(voucher.transferType, '_', ' ')}"></span><br>
+                                    <strong th:text="#{thymeleaf.voucher.hotel.type} + ':'">Hotel Type:</strong>
+                                    <span class="star">
+                                        <th:block th:switch="${voucher.hotelType}">
+                                            <span th:case="ONE_STAR">★</span>
+                                            <span th:case="TWO_STARS">★★</span>
+                                            <span th:case="THREE_STARS">★★★</span>
+                                            <span th:case="FOUR_STARS">★★★★</span>
+                                            <span th:case="FIVE_STARS">★★★★★</span>
+                                            <span th:case="*">N/A</span>
+                                        </th:block>
+                                    </span><br>
+                                </p>
+                                <p class="card-text">
+                                    <strong th:text="#{thymeleaf.voucher.hot.status}">Hot Status:</strong>
+                                    <i class="bi"
+                                       th:class="${voucher.hotStatus} ? 'bi-fire text-danger' : 'bi-fire text-muted'"></i>
+                                </p>
+                            </div>
+                            <div class="text-center mb-3">
+                                <a class="btn btn-primary w-50"
+                                   th:href="@{/vouchers/info/{voucherId}(voucherId=${voucher.id})}">
+                                    <i class="bi bi-info-circle"></i>
+                                    <span th:text="#{thymeleaf.voucher.details}">Details</span>
+                                </a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:if="${currentPage > 1}">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=0, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="#{pagination.first}">First</a>
+                </li>
+
+                <li class="page-item" th:if="${currentPage > 1}">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=${currentPage - 2}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="#{pagination.previous}">Previous</a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=0, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}">1</a>
+                </li>
+
+                <li class="page-item disabled" th:if="${currentPage > 3}">
+                    <span class="page-link">...</span>
+                </li>
+
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                    th:if="${i > 1 && i < totalPages}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=${i - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="${i}"></a>
+                </li>
+
+                <li class="page-item disabled" th:if="${currentPage < totalPages - 3}">
+                    <span class="page-link">...</span>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="${totalPages}"></a>
+                </li>
+
+                <li class="page-item" th:if="${currentPage < totalPages}">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=${currentPage}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="#{pagination.next}">Next</a>
+                </li>
+
+                <li class="page-item" th:if="${currentPage < totalPages}">
+                    <a class="page-link"
+                       th:href="@{/vouchers(page=${totalPages - 1}, size=${voucherPage.size}, tourType=${tourType}, transferType=${transferType}, minPrice=${minPrice}, maxPrice=${maxPrice}, hotelType=${hotelType}, hotStatus=${hotStatus})}"
+                       th:text="#{pagination.last}">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

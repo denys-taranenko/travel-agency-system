@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{payment.tab}">Order | Payment</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/payment-page.css">
+    <script src="https://js.stripe.com/v3/"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="payment-container">
+        <div class="payment-header">
+            <a th:href="@{/users/info}" class="back-button btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i>
+                <span th:text="#{payment.back.button}">Back:</span>
+            </a>
+            <h2 class="h4 mb-3" th:text="#{payment.title}">Payment for the order</h2>
+            <p class="text-muted">#<span th:text="${order.id}"></span></p>
+        </div>
+
+        <div class="order-summary">
+            <div class="order-item">
+                <span th:text="#{payment.sum}">Sum:</span>
+                <span th:text="${#numbers.formatDecimal(order.orderPrice, 1, 2)} + ' USD'"></span>
+            </div>
+            <div class="order-item">
+                <span th:text="#{payment.status}">Status:</span>
+                <span class="badge bg-secondary" th:text="${order.status}"></span>
+            </div>
+        </div>
+
+        <form id="payment-form" th:action="@{/order/pay/{orderId}(orderId=${order.id})}" method="post">
+            <input type="hidden" name="orderId" th:value="${order.id}">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold" th:text="#{payment.card}">Bank card details</label>
+                <div class="card-element-wrapper">
+                    <div id="card-element"></div>
+                </div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+                    <span id="button-text">
+                        <i class="fas fa-lock me-2"></i>
+                        <span th:text="#{payment.pay.button}">Pay</span>
+                        <span th:text="${#numbers.formatDecimal(order.orderPrice, 1, 2)}"></span> USD
+                    </span>
+                <span id="button-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      style="display: none;"></span>
+            </button>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="payment-footer">
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa payment-method-icon"></i>
+                    <i class="fab fa-cc-mastercard payment-method-icon"></i>
+                    <i class="fab fa-cc-amex payment-method-icon"></i>
+                </div>
+                <div class="secure-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span th:text="#{payment.pay.footer}">Secure payment via Stripe</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeStripePayment(
+            /*[[${stripePublicKey}]]*/ '',
+            /*[[${#numbers.formatDecimal(order.orderPrice, 1, 2)}]]*/ '0.00',
+            /*[[@{/api/payment-intent}]]*/ ''
+        );
+    });
+</script>
+<script src="/js/stripe-payment.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

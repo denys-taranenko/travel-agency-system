@@ -1,0 +1,47 @@
+.navbar {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.navbar .navbar-brand img {
+    width: 70px;
+    height: auto;
+    vertical-align: middle;
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav .nav-link {
+    font-size: 16px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar-nav .nav-link:hover i.bi-box-arrow-in-right {
+    color: #007bff;
+}
+
+.navbar-nav .nav-link:hover i.bi-person-plus {
+    color: #28a745;
+}
+
+.navbar-nav .nav-link:hover i.bi-box-arrow-right {
+    color: #dc3545;
+}
+
+.navbar-nav .nav-link:hover i.bi-globe {
+            color: #007bff;
+}
+
+.disabled-link {
+    pointer-events: none;
+    cursor: not-allowed;
+}

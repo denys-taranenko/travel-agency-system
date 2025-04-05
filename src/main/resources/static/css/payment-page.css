@@ -1,0 +1,121 @@
+:root {
+    --primary-color: #6772e5;
+    --error-color: #fa755a;
+    --success-color: #28a745;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.payment-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.order-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.card-element-wrapper {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card-element-wrapper.StripeElement--focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.card-element-wrapper.StripeElement--invalid {
+    border-color: var(--error-color);
+}
+
+#card-errors {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    min-height: 20px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #5469d4;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.payment-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    color: var(--success-color);
+}
+
+.payment-methods {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.payment-method-icon {
+    font-size: 1.5rem;
+    color: #6c757d;
+}

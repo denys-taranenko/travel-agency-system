@@ -1,0 +1,34 @@
+.form-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 150px;
+}
+
+.custom-success-link {
+    color: #0f5132;
+    font-weight: bold;
+}
+
+.card {
+    flex: 1 1 250px;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+.card i {
+    font-size: 3rem;
+    color: #007bff;
+}
+
+.card h3 {
+    margin-top: 15px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.card p {
+    text-align: center;
+}

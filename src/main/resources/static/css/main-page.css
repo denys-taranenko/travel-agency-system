@@ -1,0 +1,19 @@
+.carousel-inner {
+    height: 100%;
+}
+
+.carousel-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-item img {
+    height: 85vh;
+    object-fit: cover;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}

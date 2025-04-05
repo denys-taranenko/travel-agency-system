@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="footer bg-dark text-white" th:fragment="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <p th:text="#{thymeleaf.rights}">© 2025 Travel Agency. All rights reserved.</p>
+                <p><a class="text-white" th:text="#{thymeleaf.developer}">Developed by Denys Taranenko</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

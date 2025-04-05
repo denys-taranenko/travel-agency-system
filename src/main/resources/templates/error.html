@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="'Error ' + ${statusCode}">Error</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 70vh;">
+    <div class="text-center" style="max-width: 600px; width: 100%; padding: 20px;">
+        <h1 class="display-1 font-weight-bold"
+            style="color: #adb5bd; font-size: 8rem; letter-spacing: 3px; transform: scaleX(1.4); font-weight: 900;">
+            <span th:text="${statusCode}"></span>
+        </h1>
+
+        <div class="container mt-5">
+            <div class="alert alert-danger">
+                <strong><span th:text="#{thymeleaf.error.status}">Error Status</span></strong>: <span
+                    th:text="${status}"></span>
+                <br/>
+                <strong><span th:text="#{thymeleaf.error.message}">Message</span></strong>: <span
+                    th:text="${statusMessage}">Status Message</span>
+            </div>
+        </div>
+
+        <a href="/" class="btn btn-primary btn-lg mt-5">
+            <i class="bi bi-house"></i> <span th:text="#{thymeleaf.error.go.home.button}">Go Home</span>
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

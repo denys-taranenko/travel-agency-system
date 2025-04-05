@@ -1,0 +1,114 @@
+body {
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+.about-header {
+    text-align: center;
+    padding: 50px 0;
+    background-color: #00aaff;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 50px;
+}
+
+.about-header h1 {
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.about-header p {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.team-section {
+    margin-top: 50px;
+}
+
+.team-member {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.team-member h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.team-member p {
+    font-size: 1rem;
+    color: #777;
+}
+
+.services-section {
+padding: 50px 0;
+}
+
+.service-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 30px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.service-card h4 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.service-card p {
+    font-size: 1.1rem;
+    color: #555;
+    flex-grow: 1;
+}
+
+.service-card img {
+    border-radius: 50%;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: 15px;
+    align-self: center;
+}
+
+.cta-section {
+    background-color: #00aaff;
+    border-radius: 10px;
+    padding: 50px 0;
+    color: white;
+    text-align: center;
+}
+.cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+.cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+.cta-button {
+    background-color: #ff7f00;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.cta-button:hover {
+    background-color: #ff5f00;
+}

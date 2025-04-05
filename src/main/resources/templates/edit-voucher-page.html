@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.edit.voucher.tab}">Management | Edit Voucher</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/create-voucher-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="container" style="width: 100%; padding-top: 50px;">
+    <div class="row text-center">
+        <h2 th:text="#{thymeleaf.edit.voucher}">Edit Voucher</h2>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="container mx-auto" style="max-width: 1400px;">
+            <form method="post" role="form" th:action="@{/management/edit/{id}(id=${voucher.id})}"
+                  th:object="${voucher}" novalidate>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="title" th:field="*{title}"
+                                   th:placeholder="#{thymeleaf.enter.title}">
+                            <div th:if="${#fields.hasErrors('title')}" class="text-danger small"
+                                 th:errors="*{title}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea type="text" class="form-control" id="description" th:field="*{description}"
+                                      rows="8" th:placeholder="#{thymeleaf.enter.description}"
+                                      style="resize: none;"></textarea>
+                            <div th:if="${#fields.hasErrors('description')}" class="text-danger small"
+                                 th:errors="*{description}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="number" class="form-control" id="price" th:field="*{price}" min="0" step="1"
+                                   th:placeholder="#{thymeleaf.set.price}">
+                            <div th:if="${#fields.hasErrors('price')}" class="text-danger small"
+                                 th:errors="*{price}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="arrivalDate" th:field="*{arrivalDate}"
+                                   th:placeholder="#{thymeleaf.set.arrival.date}">
+                            <div th:if="${#fields.hasErrors('arrivalDate')}" class="text-danger small"
+                                 th:errors="*{arrivalDate}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="evictionDate" th:field="*{evictionDate}"
+                                   th:placeholder="#{thymeleaf.set.eviction.date}">
+                            <div th:if="${#fields.hasErrors('evictionDate')}" class="text-danger small"
+                                 th:errors="*{evictionDate}"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <select th:field="*{tourType}" class="form-select">
+                                <option value="" disabled th:text="#{thymeleaf.select.tour.type}">Select Tour Type
+                                </option>
+                                <option th:each="type : ${tourTypes}" th:value="${type}"
+                                        th:text="${type.getFormattedName()}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <select th:field="*{transferType}" class="form-select">
+                                <option value="" disabled th:text="#{thymeleaf.select.transfer.type}">Select Transfer
+                                    Type
+                                </option>
+                                <option th:each="type : ${transferTypes}" th:value="${type}"
+                                        th:text="${type.getFormattedName()}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <select th:field="*{hotelType}" class="form-select">
+                                <option value="" disabled th:text="#{thymeleaf.select.hotel.type}">Select Hotel Type
+                                </option>
+                                <option th:each="type : ${hotelTypes}" th:value="${type}"
+                                        th:text="${type.getFormattedName()}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="hotStatus" class="form-check-label" th:text="#{thymeleaf.is.hot}">Is this a hot
+                                voucher?</label>
+                            <input type="checkbox" class="form-check-input" id="hotStatus" th:field="*{hotStatus}"/>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3" th:text="#{thymeleaf.edit.button}">
+                            Edit
+                        </button>
+                        <p th:if="${error}" class="text-danger text-center mt-3" th:text="${error}"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/uk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/good-calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.contacts.tab}">Contacts</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/contacts-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1><i class="bi bi-envelope-fill text-primary"></i><span
+                th:text="#{thymeleaf.contacts.title}">Contact Us</span></h1>
+        <p class="text-muted" th:text="#{thymeleaf.contacts.title.phrase}">We are happy to help you! Reach out to us
+            anytime</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="contact-card">
+                <h4><i class="bi bi-telephone-fill contact-icon"></i> <span
+                        th:text="#{thymeleaf.contacts.phone}">Phone</span></h4>
+                <p><a href="tel:+380970123456" class="text-decoration-none">+38 (097) 012-34-56</a></p>
+
+                <h4><i class="bi bi-envelope-fill contact-icon"></i> <span>Email</span></h4>
+                <p><a href="mailto:info@example.com" class="text-decoration-none">info@example.com</a></p>
+
+                <h4><i class="bi bi-geo-alt-fill contact-icon"></i> <span th:text="#{thymeleaf.contacts.address}">Address</span>
+                </h4>
+                <p th:text="#{thymeleaf.contacts.agency.address}">Lesya Ukrainka Square 19, Kyiv, Ukraine</p>
+
+                <h4><i class="bi bi-clock-fill contact-icon"></i> <span th:text="#{thymeleaf.contacts.working}">Working Hours</span>
+                </h4>
+                <p><span th:text="#{thymeleaf.contacts.working.days}">Mon-Fri:</span> 9:00 - 18:00</p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="contact-card-map">
+                <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d644961.3381894815!2d30.5210990232734!3d50.450015057347726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4cf1d6f6b5477%3A0x407cb9e86d4f3b0b!2z0JrQsNGC0L7Qu9Cw0YbQsNGC!5e0!3m2!1sen!2sua!4v1683139833525!5m2!1sen!2sua"
+                        width="100%" height="100%" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center social-icons">
+        <h4 th:text="#{thymeleaf.contacts.follow.us}">Follow Us</h4>
+        <a href="https://www.facebook.com/" class="btn btn-outline-primary btn-lg mx-2" target="_blank"><i
+                class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/" class="btn btn-outline-danger btn-lg mx-2" target="_blank"><i
+                class="bi bi-instagram"></i></a>
+        <a href="https://x.com/" class="btn btn-outline-info btn-lg mx-2" target="_blank"><i class="bi bi-twitter"></i></a>
+        <a href="https://www.linkedin.com/" class="btn btn-outline-dark btn-lg mx-2" target="_blank"><i
+                class="bi bi-linkedin"></i></a>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

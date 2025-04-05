@@ -1,0 +1,14 @@
+.text-danger {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 10px;
+    background-color: #f8d7da;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.text-danger small {
+    display: inline-block;
+    margin-top: 5px;
+}

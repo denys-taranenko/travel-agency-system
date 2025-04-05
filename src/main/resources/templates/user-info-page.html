@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.user.tab}">User | Info</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/user-info-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+<div class="container" style="padding-top: 50px;">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-info">
+                <div class="avatar-container text-center position-relative">
+                    <img th:src="${user.avatarPath != null ? '/images/avatars/' + user.avatarPath : '/images/avatars/default-avatar.png'}"
+                         alt="User Avatar" style="width: 200px; height: 200px; border-radius: 50%;"/>
+                </div>
+
+                <h3 class="text-center" th:text="${user.username}"></h3>
+
+                <div class="mt-3">
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
+                        <p style="text-align: left;" th:if="${user.phoneNumber != null}">
+                            <i class="bi bi-telephone" style="font-size: 16px; margin-right: 5px;"></i>
+                            <strong th:text="#{thymeleaf.user.phone.number}">Phone Number</strong>:
+                            <span th:text="${user.phoneNumber}"></span>
+                        </p>
+                    </th:block>
+                    <th:block sec:authorize="hasRole('ROLE_USER')">
+                        <th:block th:if="${#authentication.principal.id == user.id}">
+                            <p style="text-align: left;" th:if="${user.phoneNumber != null}">
+                                <i class="bi bi-telephone" style="font-size: 16px; margin-right: 5px;"></i>
+                                <strong th:text="#{thymeleaf.user.phone.number}">Phone Number</strong>:
+                                <span th:text="${user.phoneNumber}"></span>
+                            </p>
+                        </th:block>
+                    </th:block>
+
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
+                        <p style="text-align: left;" th:if="${user.email != null}">
+                            <i class="bi bi-envelope" style="font-size: 16px; margin-right: 5px;"></i>
+                            <strong th:text="#{thymeleaf.user.email}">Email</strong>:
+                            <span th:text="${user.email}"></span>
+                        </p>
+                    </th:block>
+                    <th:block sec:authorize="hasRole('ROLE_USER')">
+                        <th:block th:if="${#authentication.principal.id == user.id}">
+                            <p style="text-align: left;" th:if="${user.email != null}">
+                                <i class="bi bi-envelope" style="font-size: 16px; margin-right: 5px;"></i>
+                                <strong th:text="#{thymeleaf.user.email}">Email</strong>:
+                                <span th:text="${user.email}"></span>
+                            </p>
+                        </th:block>
+                    </th:block>
+
+                    <th:block sec:authorize="hasRole('ROLE_USER')">
+                        <th:block th:if="${#authentication.principal.id == user.id}">
+                            <p style="text-align: left;">
+                                <i class="bi bi-wallet" style="font-size: 16px; margin-right: 5px;"></i>
+                                <strong th:text="#{thymeleaf.user.balance}">Balance</strong>:
+                                <span th:text="${user.balance}"></span><span>$</span>
+                            </p>
+                        </th:block>
+                    </th:block>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <th:block sec:authorize="hasRole('ROLE_USER')">
+                    <th:block th:if="${#authentication.principal.id == user.id}">
+                        <a th:href="@{/users/top-up}" class="btn btn-success" style="width: 200px;">
+                            <i class="bi bi-wallet"></i>
+                            <span th:text="#{thymeleaf.user.top.up.button}">Top up balance</span>
+                        </a>
+                    </th:block>
+                    <th:block th:unless="${#authentication.principal.id == user.id}">
+                        <span class="text-muted"></span>
+                    </th:block>
+                </th:block>
+
+                <th:block sec:authorize="hasRole('ROLE_USER')">
+                    <th:block th:if="${#authentication.principal.id == user.id}">
+                        <a th:href="@{/users/info/settings}" class="btn btn-primary"
+                           style="width: 200px;">
+                            <i class="bi bi-gear-fill"></i>
+                            <span th:text="#{thymeleaf.user.settings.button}">Settings</span>
+                        </a>
+                    </th:block>
+                    <th:block th:unless="${#authentication.principal.id == user.id}">
+                        <span class="text-muted"></span>
+                    </th:block>
+                </th:block>
+
+                <div th:if="${error}" class="alert alert-danger container mt-3 col-8 mx-auto position-relative">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y"
+                            style="margin-right: 10px;" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div th:if="${message}" class="container-sm mt-5">
+                    <div class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto"
+                         role="alert">
+                        <strong th:text="#{thymeleaf.success}">Success!</strong>
+                        <span th:if="${message == 'changeBalance'}" th:text="#{thymeleaf.success.balance}">Balance successfully replenished!</span>
+                        <span th:if="${message == 'orderRegistered'}" th:text="#{thymeleaf.success.order.registered}">Request accepted! Manager will contact you shortly!</span>
+                        <span th:if="${message == 'orderCanceled'}" th:text="#{thymeleaf.success.order.canceled}">The order was cancelled! The manager will contact you for a refund!</span>
+                        <span th:if="${message == 'orderPaid'}" th:text="#{thymeleaf.success.pay}">Order successfully paid!</span>
+                        <span th:if="${message == 'changeSettings'}" th:text="#{thymeleaf.success.settings}">Data successfully changed!</span>
+                        <span th:if="${message == 'orderDeleted'}" th:text="#{thymeleaf.success.order.deleted}">Order successfully deleted!</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div th:if="${orders != null && orders.size() > 0}">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0" th:text="#{thymeleaf.user.orders}" sec:authorize="hasRole('ROLE_USER')">My
+                            Orders</h5>
+                        <h5 class="mb-0" th:text="#{thymeleaf.user.orders.management}"
+                            sec:authorize="!hasRole('ROLE_USER')">User Orders</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                        <ul class="list-group">
+                            <li class="list-group-item" th:each="order : ${orders}"
+                                style="border-left: 4px solid #007bff; padding: 1rem 1.5rem; border-radius: 8px;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <p class="mb-0" style="font-weight: 600; color: #333;"
+                                       th:text="#{thymeleaf.user.order.details}">Order Details</p>
+                                    <a th:if="${order.status == 'PAID' or order.status == 'PAID_AND_CANCELED'}"
+                                       th:href="@{/order/{id}/pdf(id=${order.id})}" target="_blank"
+                                       style="text-decoration: none;" sec:authorize="hasRole('ROLE_USER')">
+                                        <i class="bi bi-box-arrow-down" style="color: #007bff; font-size: 1.2rem;"></i>
+                                        <span class="ms-2" style="color: #007bff; font-weight: 500;"
+                                              th:text="#{thymeleaf.user.order.pdf}">Download PDF</span>
+                                    </a>
+                                </div>
+
+                                <div style="border-top: 1px solid #eee; padding-top: 10px;">
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-card-text" style="color: #007bff;"></i>
+                                        <strong>ID: </strong>
+                                        <span th:if="${order.id != null}" th:text="${order.id.substring(0, 8)}"></span>
+                                    </p>
+
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-gear" style="color: #007bff;"></i>
+                                        <strong th:text="#{thymeleaf.user.order.status}">Status:</strong>
+                                        <span th:text="${#strings.replace(order.status, '_', ' ')}"></span>
+                                    </p>
+
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-calendar" style="color: #007bff;"></i>
+                                        <strong th:text="#{thymeleaf.user.order.date}">Date:</strong>
+                                        <span th:text="${order.orderDate}"></span>
+                                    </p>
+
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-cash-coin" style="color: #007bff;"></i>
+                                        <strong th:text="#{thymeleaf.voucher.price}">Price:</strong>
+                                        <span th:text="${order.orderPrice}"></span>
+                                    </p>
+
+                                </div>
+
+                                <button th:if="${order.status == 'PAID' or order.status == 'REGISTERED' or order.status == 'APPROVED'}"
+                                        type="button" class="btn btn-danger btn-sm" style="font-weight: bold;"
+                                        th:attr="data-order-id=${order.id},data-modal-type='cancel'"
+                                        th:text="#{thymeleaf.cancel.order}"
+                                        sec:authorize="hasRole('ROLE_USER')">
+                                    Cancel Order
+                                </button>
+
+                                <button th:if="${order.status == 'PAID' or order.status == 'PROCESSED'}"
+                                        type="button" class="btn btn-danger btn-sm" style="font-weight: bold;"
+                                        th:attr="data-order-id=${order.id},data-modal-type='delete'"
+                                        th:text="#{thymeleaf.delete.order}"
+                                        sec:authorize="hasRole('ROLE_USER')">
+                                    Delete From Orders
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-sm" style="font-weight: bold;"
+                                        th:if="${order.status == 'APPROVED'}"
+                                        th:attr="data-order-id=${order.id},data-modal-type='pay'"
+                                        th:text="#{thymeleaf.pay.order}"
+                                        sec:authorize="hasRole('ROLE_USER')">
+                                    Pay Order
+                                </button>
+
+                                <div class="custom-modal modal-hidden" th:id="'deleteOrderModal-' + ${order.id}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 th:text="#{thymeleaf.delete.order}">Delete From Orders</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p th:text="#{thymeleaf.delete.order.confirmation}">Are you sure you want to
+                                                remove this order from your list?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                                    th:text="#{thymeleaf.close.button}">
+                                                Close
+                                            </button>
+                                            <form th:action="@{/order/delete/{orderId}(orderId=${order.id})}"
+                                                  method="post">
+                                                <button type="submit" class="btn btn-danger"
+                                                        th:text="#{thymeleaf.confirm.order.delete}">
+                                                    Confirm Deleting
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="custom-modal modal-hidden" th:id="'payOrderModal-' + ${order.id}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 th:text="#{thymeleaf.pay.order}">Pay Order</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p th:text="#{thymeleaf.pay.order.confirmation}">Are you sure you want
+                                                to proceed with payment?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                                    th:text="#{thymeleaf.close.button}">
+                                                Close
+                                            </button>
+                                            <form th:action="@{/order/pay/{orderId}(orderId=${order.id})}"
+                                                  method="get">
+                                                <button type="submit" class="btn btn-success"
+                                                        th:text="#{thymeleaf.confirm.order.payment}">
+                                                    Confirm Payment
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="custom-modal modal-hidden" th:id="'cancelOrderModal-' + ${order.id}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 th:text="#{thymeleaf.cancel.order}">Cancel Order</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label for="cancelReason-${order.id}"
+                                                   th:text="#{thymeleaf.cancel.order.reason}">
+                                                Enter a reason for cancellation (optional):
+                                            </label>
+                                            <form th:action="@{/users/info/cancel/{orderId}(orderId=${order.id})}"
+                                                  method="post">
+                                                <textarea id="cancelReason-${order.id}" name="reason"
+                                                          class="form-control" rows="4"></textarea>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                                            th:text="#{thymeleaf.close.button}">
+                                                        Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-danger"
+                                                            th:text="#{thymeleaf.confirm.order.cancel}">
+                                                        Confirm Cancellation
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${vouchers != null && vouchers.size() > 0}">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0" th:text="#{thymeleaf.user.vouchers}" sec:authorize="hasRole('ROLE_USER')">My
+                            Vouchers</h5>
+                        <h5 class="mb-0" th:text="#{thymeleaf.user.vouchers.management}"
+                            sec:authorize="!hasRole('ROLE_USER')">User Vouchers</h5>
+                    </div>
+                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                        <ul class="list-group">
+                            <li class="list-group-item" th:each="order : ${orders}"
+                                th:if="${order.status == 'PAID'}"
+                                style="border-left: 4px solid #007bff; padding: 1rem 1.5rem; border-radius: 8px;">
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <p class="mb-0" style="font-weight: 600; color: #333;"
+                                       th:text="#{thymeleaf.voucher.details}">Voucher Details</p>
+                                </div>
+
+                                <div style="border-top: 1px solid #eee; padding-top: 10px;">
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <span th:if="${order.voucherId != null}">
+                                            <a th:href="@{/vouchers/info/{id}(id=${order.voucherId})}"
+                                               class="text-decoration-none text-primary"
+                                               style="color: #007bff; font-weight: bold; text-decoration: underline;">
+                                                <i class="bi bi-ticket-perforated"></i>
+                                                <span th:text="#{thymeleaf.voucher}">Voucher</span>
+                                            </a>
+                                        </span>
+                                    </p>
+
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-calendar" style="color: #007bff;"></i>
+                                        <strong th:text="#{thymeleaf.voucher.arrival.date} + ':'">Arrival Date:</strong>
+                                        <span th:text="${order.voucherArrivalDate}"></span>
+                                    </p>
+
+                                    <p class="mb-1" style="font-size: 1rem; font-weight: 500; color: #333;">
+                                        <i class="bi bi-calendar-x" style="color: #007bff;"></i>
+                                        <strong th:text="#{thymeleaf.voucher.eviction.date} + ':'">Eviction
+                                            Date:</strong>
+                                        <span th:text="${order.voucherEvictionDate}"></span>
+                                    </p>
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/modal.js"></script>
+</body>
+</html>

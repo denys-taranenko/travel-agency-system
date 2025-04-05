@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.user.settings.tab}">User | Settings</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/user-settings-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="mt-3">
+    <h2 class="text-center" th:text="#{thymeleaf.user.settings}">Settings</h2>
+</div>
+
+<div class="container" style="padding-top: 50px;">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-info">
+                <div class="avatar-container text-center position-relative">
+                    <img th:src="${user.avatarPath != null ? '/images/avatars/' + user.avatarPath : '/images/avatars/default-avatar.png'}"
+                         alt="User Avatar" style="width: 150px; height: 150px; border-radius: 50%;"/>
+
+                    <div class="mt-4">
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                            <i class="bi bi-pencil"></i>
+                            <span th:text="#{thymeleaf.user.settings.change.button}">Change Avatar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 mx-auto mt-4">
+                <div class="card shadow-lg border-0 rounded-4" style="max-width: 100%; background-color: #f8f9fa;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-4 text-muted">
+                            <i class="bi bi-person-circle me-2" style="font-size: 1.5rem; color: #6c757d;"></i>
+                            <span th:text="#{thymeleaf.user.settings.user.info}">User Info</span>
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bi bi-person-circle me-3" style="font-size: 1.2rem; color: #007bff;"></i>
+                                <strong th:text="#{thymeleaf.user.username}">Username</strong>: <span
+                                    th:text="${user.username}">Username</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bi bi-telephone me-3" style="font-size: 1.2rem; color: #007bff;"></i>
+                                <strong th:text="#{thymeleaf.user.phone.number}">Phone Number</strong>: <span
+                                    th:text="${user.phoneNumber}">Phone Number</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bi bi-envelope me-3" style="font-size: 1.2rem; color: #007bff;"></i>
+                                <strong th:text="#{thymeleaf.user.email}">Email</strong>: <span th:text="${user.email}">Email</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form th:action="@{/users/info/settings}" method="POST" th:object="${user}" novalidate>
+
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label">
+                        <i class="bi bi-telephone"></i>
+                        <span th:text="#{thymeleaf.user.phone.number}">Phone Number</span>
+                    </label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
+                           th:field="*{phoneNumber}" th:placeholder="#{thymeleaf.user.new.phone.number}"
+                           th:value="${user.phoneNumber}">
+                    <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger small"
+                         th:errors="*{phoneNumber}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        <i class="bi bi-envelope"></i>
+                        <span th:text="#{thymeleaf.user.email}">Email</span>
+                    </label>
+
+                    <input type="email" class="form-control" id="email" name="email"
+                           th:placeholder="#{thymeleaf.user.new.email}"
+                           th:value="${user.email}">
+                    <div th:if="${#fields.hasErrors('email')}" class="text-danger small" th:errors="*{email}"></div>
+                </div>
+
+                <p th:if="${error}" class="text-danger text-center mt-3" th:text="${error}"></p>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i>
+                        <span th:text="#{thymeleaf.save.button}">Save</span>
+                    </button>
+                </div>
+                <div th:if="${message}" class="container-sm mt-5">
+                    <div class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto"
+                         role="alert">
+                        <span th:if="${message == 'changeSettings'}" th:text="#{thymeleaf.success.settings}">Data successfully changed!</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel" th:text="#{thymeleaf.user.settings.avatar}">Select
+                    Avatar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <form th:action="@{/users/info/settings/avatar}" method="POST" id="avatarForm">
+                    <div class="row">
+                        <div class="col-6 mb-1" th:each="avatar : ${avatars}">
+                            <div class="text-center">
+                                <img th:src="@{/images/avatars/{avatar}(avatar=${avatar})}"
+                                     alt="Avatar"
+                                     style="width: 100px; height: 100px; border-radius: 50%; cursor: pointer;"
+                                     th:data-avatar="${avatar}"
+                                     onclick="selectAvatarAndSubmit(this)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedAvatar" name="avatar"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/avatar-click.js"></script>
+</body>
+</html>

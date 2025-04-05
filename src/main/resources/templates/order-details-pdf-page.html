@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Order PDF</title>
+
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            page-break-before: always;
+            page-break-after: always;
+        }
+
+        .check-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px auto;
+            border: 2px solid #000;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #007bff;
+        }
+
+        .order-details, .customer-details, .product-details {
+            margin-bottom: 15px;
+        }
+
+        .order-details h3, .customer-details h3, .product-details h3 {
+            font-size: 16px;
+            border-bottom: 1px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .order-details p, .customer-details p, .product-details p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .order-details p strong, .customer-details p strong, .product-details p strong {
+            width: 150px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .line {
+            width: 100%;
+            border-top: 2px solid #000;
+            margin: 10px 0;
+        }
+
+        .signature {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .signature p {
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+<div class="check-container">
+    <div class="header">
+        <h1>Order #<span th:text="${order.id}"></span></h1>
+    </div>
+
+    <div class="order-details">
+        <h3>Order Details</h3>
+        <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+        <p><strong>Date:</strong> <span th:text="${order.orderDate}"></span></p>
+        <p><strong>Order Price:</strong> <span th:text="${order.orderPrice}">$</span></p>
+    </div>
+
+    <div class="customer-details">
+        <h3>Customer Information</h3>
+        <p><strong>ID:</strong> <span th:text="${user.id}"></span></p>
+        <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Phone Number:</strong> <span th:text="${user.phoneNumber}"></span></p>
+    </div>
+
+    <div class="product-details">
+        <h3>Voucher Details</h3>
+        <p><strong>ID:</strong> <span th:text="${voucher.id}"></span></p>
+        <p><strong>Title:</strong> <span th:text="${voucher.title}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${voucher.status}"></span></p>
+    </div>
+
+    <div class="line"></div>
+
+    <div style="position: relative; width: 100%; height: 100%; text-align: center; z-index: 1;">
+        <img src="https://cdn.pixabay.com/photo/2020/04/10/13/23/paid-5025785_1280.png"
+             alt="Seal"
+             style="position: absolute; left: 50%; transform: translateX(-50%); width: auto; height: 300px; object-fit: contain; z-index: 2;"/>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for your purchase!</p>
+        <p>If you have any questions, please contact us at: <strong>support@yourcompany.com</strong></p>
+    </div>
+
+    <div class="signature">
+        <p>Signature: ___________________________</p>
+        <p>Date: ________________________________</p>
+    </div>
+
+</div>
+</body>
+</html>

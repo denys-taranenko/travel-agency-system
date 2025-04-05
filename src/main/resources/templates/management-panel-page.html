@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.management}">Management</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/management-panel.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div th:if="${message}" class="container-sm">
+    <div th:if="${message == 'created'}"
+         class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto" role="alert"
+         style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+        <strong th:text="#{thymeleaf.success}">Success!</strong>
+        <span th:text="#{thymeleaf.success.voucher.created}">Voucher successfully created!</span>
+        <p class="alert-dismissible mt-2 mb-0 text-center" role="alert">
+        <div style="display: inline-block;">
+            <span th:text="#{thymeleaf.available}">Available</span>
+            <a th:href="@{/vouchers/info/{id}(id=${voucherId})}" class="custom-success-link">
+                <u th:text="#{thymeleaf.voucher.link}">here</u>
+            </a>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<div class="form-container">
+    <div class="form-card-container">
+        <a th:href="@{/users}" class="text-decoration-none">
+            <div class="card p-4 shadow-lg text-center" style="width: 250px;">
+                <i class="bi bi-person" style="font-size: 3rem; color: #007bff;"></i>
+                <h3 class="m-0 mt-3" th:text="#{thymeleaf.users}">Users</h3>
+            </div>
+        </a>
+
+        <a th:href="@{/management/vouchers}" class="text-decoration-none">
+            <div class="card p-4 shadow-lg text-center" style="width: 250px;">
+                <i class="bi bi-card-checklist" style="font-size: 3rem; color: #007bff;"></i>
+                <h3 class="m-0 mt-3" th:text="#{thymeleaf.vouchers}">Vouchers</h3>
+            </div>
+        </a>
+
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/management/create}" class="text-decoration-none">
+            <div class="card p-4 shadow-lg text-center" style="width: 250px;">
+                <i class="bi bi-plus-circle" style="font-size: 3rem; color: #007bff;"></i>
+                <h3 class="m-0 mt-3" th:text="#{thymeleaf.new.voucher}">New Voucher</h3>
+            </div>
+        </a>
+
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/management/archive}" class="text-decoration-none">
+            <div class="card p-4 shadow-lg text-center" style="width: 250px;">
+                <i class="bi bi-archive-fill" style="font-size: 3rem; color: #007bff;"></i>
+                <h3 class="m-0 mt-3" th:text="#{thymeleaf.archive.vouchers}">Archive Vouchers</h3>
+            </div>
+        </a>
+
+        <a sec:authorize="hasRole('ROLE_MANAGER')" th:href="@{/management/requests}" class="text-decoration-none">
+            <div class="card p-4 shadow-lg text-center" style="width: 250px;">
+                <i class="bi bi-clipboard" style="font-size: 3rem; color: #007bff;"></i>
+                <h3 class="m-0 mt-3" th:text="#{thymeleaf.requests}">Requests</h3>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

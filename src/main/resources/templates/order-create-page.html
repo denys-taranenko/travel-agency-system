@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.order.tab}">Order | Create</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/order-create-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div class="container" style="width: 100%; padding-top: 50px;">
+    <h2 class="text-center" th:text="#{thymeleaf.order.create}">Create Order</h2>
+    <div class="row" style="margin-top: 30px;">
+
+        <div class="col-md-6">
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.description} + ':'"></strong> <span
+                        th:text="${voucher.title}"></span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.price} + ':'"></strong> <span
+                        th:text="${voucher.price}"></span><span>$</span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.tour.type} + ':'"></strong> <span
+                        th:text="${#strings.replace(voucher.tourType, '_', ' ')}"></span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.transfer.type} + ':'"></strong> <span
+                        th:text="${#strings.replace(voucher.transferType, '_', ' ')}"></span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.hotel.type} + ':'"></strong>
+
+                    <span class="star">
+                          <th:block th:switch="${voucher.hotelType}">
+                              <span th:case="ONE_STAR">★</span>
+                              <span th:case="TWO_STARS">★★</span>
+                              <span th:case="THREE_STARS">★★★</span>
+                              <span th:case="FOUR_STARS">★★★★</span>
+                              <span th:case="FIVE_STARS">★★★★★</span>
+                              <span th:case="*">N/A</span>
+                          </th:block>
+                    </span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.arrival.date} + ':'"></strong> <span
+                        th:text="${voucher.arrivalDate}"></span>
+                </li>
+
+                <li class="list-group-item">
+                    <strong th:text="#{thymeleaf.voucher.eviction.date} + ':'"></strong> <span
+                        th:text="${voucher.evictionDate}"></span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+
+            <form th:action="@{/order/create/{voucherId}(voucherId=${voucherId})}" th:object="${order}" method="post">
+                <div class="form-group">
+                    <textarea id="message" th:field="*{message}" class="form-control"
+                              th:placeholder="#{thymeleaf.order.message}"
+                              rows="3" style="resize: none;"></textarea>
+                </div>
+
+                <div class="form-group form-check mt-2">
+                    <input type="checkbox" id="callBackRequest" th:field="*{callBackRequest}" class="form-check-input">
+                    <label class="form-check-label" for="callBackRequest" th:text="#{thymeleaf.order.callback}">Callback
+                        Request</label>
+                </div>
+
+                <div class="form-group mt-3 text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-cart-plus"></i>
+                        <span th:text="#{thymeleaf.buy.button}">Create Order</span>
+                    </button>
+                </div>
+            </form>
+
+            <div th:if="${error}" class="alert alert-danger container mt-3 col-8 mx-auto position-relative text-center">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y"
+                        style="margin-right: 10px;" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

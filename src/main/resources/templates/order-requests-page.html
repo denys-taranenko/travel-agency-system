@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="#{thymeleaf.requests.tab}">Management | Requests</title>
+
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/order-requests-page.css">
+
+</head>
+<body>
+<div th:replace="~{fragments/header::header}"></div>
+
+<div th:if="${message}" class="container-sm">
+    <div class="alert alert-success text-center alert-dismissible fade show col-sm-8 mx-auto" role="alert"
+         style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 1050; max-width: 600px;">
+        <strong th:text="#{thymeleaf.success}">Success!</strong>
+        <span th:if="${message == 'approve'}"
+              th:text="#{thymeleaf.success.approve}">Request successfully confirmed!</span>
+        <span th:if="${message == 'cancel'}"
+              th:text="#{thymeleaf.success.order.cancel}">Order successfully canceled!</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<div class="container" style="width: 100%; padding-top: 80px;">
+
+    <div class="row mb-4">
+        <h2 class="text-center" th:text="#{thymeleaf.requests}">Requests</h2>
+    </div>
+
+    <form method="get" class="mb-3">
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <select name="status" class="form-select" th:value="${status}" style="width: 200px;">
+                    <option value="" disabled selected th:text="#{thymeleaf.select.order.status}">Select Order Status
+                    </option>
+                    <option th:each="type : ${orderStatuses}"
+                            th:value="${type}"
+                            th:text="${type.getFormattedName()}"
+                            th:selected="${type.name() == status}"></option>
+                </select>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+
+                <button type="submit" class="btn btn-primary ms-3">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+
+                <a th:href="@{/management/requests}" class="btn btn-secondary ms-2">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th th:text="#{thymeleaf.user}">User</th>
+            <th th:text="#{thymeleaf.voucher}">Voucher</th>
+            <th>
+                <a th:href="@{/management/requests(sortField='status', sortDirection=${sortField == 'status' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                   class="sortable-header"
+                   th:classappend="${sortField == 'status' ? 'active-sort' : ''}"
+                   th:text="#{thymeleaf.status}">
+                    Status
+                </a>
+                <i class="bi"
+                   th:classappend="${sortField == 'status' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                   style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+            </th>
+            <th>
+                <a th:href="@{/management/requests(sortField='orderDate', sortDirection=${sortField == 'orderDate' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                   class="sortable-header"
+                   th:classappend="${sortField == 'orderDate' ? 'active-sort' : ''}"
+                   th:text="#{thymeleaf.order.date}">
+                    Order Date
+                </a>
+                <i class="bi"
+                   th:classappend="${sortField == 'orderDate' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                   style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+            </th>
+            <th>
+                <a th:href="@{/management/requests(sortField='callBackRequest', sortDirection=${sortField == 'callBackRequest' && sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                   class="sortable-header"
+                   th:classappend="${sortField == 'callBackRequest' ? 'active-sort' : ''}"
+                   th:text="#{thymeleaf.callback}">
+                    Callback
+                </a>
+                <i class="bi"
+                   th:classappend="${sortField == 'callBackRequest' ? (sortDirection == 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'}"
+                   style="font-size: 0.9em; margin-left: 5px; vertical-align: middle;"></i>
+            </th>
+            <th th:text="#{thymeleaf.actions}">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order, elem : ${orderPage}">
+            <td th:text="${elem.count}"></td>
+            <td>
+                <a th:href="@{/users/info/{id}(id=${order.userId})}" class="text-decoration-none text-primary">
+                    <i class="bi bi-person-fill"></i>
+                    <span th:text="#{thymeleaf.user}">User</span>
+                </a>
+            </td>
+            <td>
+                <a th:href="@{/vouchers/info/{id}(id=${order.voucherId})}" class="text-decoration-none text-primary">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span th:text="#{thymeleaf.voucher}">Voucher</span>
+                </a>
+            </td>
+
+            <td th:text="${#strings.replace(order.status, '_', ' ')}"
+                th:classappend="${order.status == 'REGISTERED' ? 'text-success fw-bold status-pointer' :
+                    (order.status == 'CANCELED' ? 'text-danger fw-bold status-pointer' :
+                    (order.status == 'PAID_AND_CANCELED' ? 'text-muted fw-bold status-pointer' : ''))}"
+                data-bs-toggle="modal"
+                th:data-bs-target="'#modal-' + ${order.status} + '-' + ${order.id}"
+                th:data-cancelReason="${order.cancelReason != null ? order.cancelReason : 'No message provided'}"
+                th:data-message="${order.message != null ? order.message : 'No message provided'}">
+            </td>
+
+            <div th:id="'modal-PAID_AND_CANCELED-' + ${order.id}" class="modal fade" tabindex="-1"
+                 aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelReasonAfterPayModalLabel"
+                                th:text="#{thymeleaf.cancel.reason}">
+                                Cancellation Reason</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <span th:text="${order.cancelReason != null ? order.cancelReason : ''}"></span>
+                                <span th:if="${order.cancelReason == null}" th:text="#{thymeleaf.no.message}"></span>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    th:text="#{thymeleaf.close.button}">Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:id="'modal-CANCELED-' + ${order.id}" class="modal fade" tabindex="-1"
+                 aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelReasonModalLabel" th:text="#{thymeleaf.cancel.reason}">
+                                Cancellation Reason</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <span th:text="${order.cancelReason != null ? order.cancelReason : ''}"></span>
+                                <span th:if="${order.cancelReason == null}" th:text="#{thymeleaf.no.message}"></span>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    th:text="#{thymeleaf.close.button}">Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:id="'modal-REGISTERED-' + ${order.id}" class="modal fade" tabindex="-1"
+                 aria-labelledby="messageModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="messageModalLabel" th:text="#{thymeleaf.message}">Message</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <span th:text="${order.message != null ? order.message : ''}"></span>
+                                <span th:if="${order.message == null}" th:text="#{thymeleaf.no.message}"></span>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    th:text="#{thymeleaf.close.button}">Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <td th:text="${order.orderDate}"></td>
+            <td>
+                <i th:classappend="${order.callBackRequest} ? 'bi bi-check-circle text-success' : 'bi bi-x-circle text-danger'"></i>
+            </td>
+            <td>
+                <a th:if="${order.status == 'REGISTERED'}"
+                   th:href="@{/management/order/{id}/approve(id=${order.id})}"
+                   class="btn btn-success">
+                    <i class="bi bi-check-circle"></i>
+                    <span th:text="#{thymeleaf.approve.button}">Approve</span>
+                </a>
+
+                <a th:href="@{/management/order/{id}/cancel(id=${order.id})}"
+                   class="btn btn-danger">
+                    <i class="bi bi-x-circle"></i>
+                    <span th:text="#{thymeleaf.cancel.button}">Cancel</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=0, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.first}">First</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=${currentPage - 2})}"
+                   th:text="#{pagination.previous}">Previous</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=0, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}">1</a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage > 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                th:if="${i > 1 && i < totalPages}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=${i - 1}, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${i}"></a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=${totalPages - 1}, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="${totalPages}"></a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=${currentPage}, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.next}">Next</a>
+            </li>
+
+            <li class="page-item" th:if="${currentPage < totalPages}">
+                <a class="page-link"
+                   th:href="@{/management/requests(page=${totalPages - 1}, size=${orderPage.size}, status=${status}, sortField=${sortField}, sortDirection=${sortDirection})}"
+                   th:text="#{pagination.last}">Last</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:replace="~{fragments/footer::footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
