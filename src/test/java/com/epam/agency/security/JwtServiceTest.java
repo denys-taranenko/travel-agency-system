@@ -1,6 +1,6 @@
 package com.epam.agency.security;
 
-import com.epam.finaltask.model.enums.Role;
+import com.epam.agency.model.enums.Role;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -25,9 +25,6 @@ import static org.mockito.Mockito.when;
 
 class JwtServiceTest {
 
-    @InjectMocks
-    private JwtService jwtService;
-
     @Mock
     private UserDetailsService userDetailsService;
 
@@ -36,6 +33,9 @@ class JwtServiceTest {
 
     @Mock
     private SecurityUser userDetails;
+
+    @InjectMocks
+    private JwtService jwtService;
 
     private Authentication authentication;
     private String validToken;
@@ -59,58 +59,76 @@ class JwtServiceTest {
 
     @Test
     void shouldGenerateTokenTest() {
+        //Act
         String token = jwtService.generateToken(authentication);
 
+        //Assert
         assertNotNull(token);
         assertTrue(token.startsWith("eyJ"));
     }
 
     @Test
     void shouldGetTokenFromCookiesTest() {
+        //Arrange
         Cookie cookie = new Cookie("TOKEN", validToken);
         when(request.getCookies()).thenReturn(new Cookie[]{cookie});
 
+        //Act
         String tokenFromCookie = jwtService.getTokenFromCookies(request);
 
+        //Assert
         assertNotNull(tokenFromCookie);
         assertEquals(validToken, tokenFromCookie);
     }
 
     @Test
     void shouldReturnNullWhenNoTokenInCookiesTest() {
+        //Arrange
         when(request.getCookies()).thenReturn(null);
+
+        //Act
         String tokenFromCookie = jwtService.getTokenFromCookies(request);
+
+        //Assert
         assertNull(tokenFromCookie);
     }
 
     @Test
     void shouldCheckIfTokenIsValidTest() {
+        //Act
         boolean isValid = jwtService.isTokenValid(validToken);
-        assertTrue(isValid);
-
         boolean isInvalid = jwtService.isTokenValid(invalidToken);
+
+        //Assert
+        assertTrue(isValid);
         assertFalse(isInvalid);
     }
 
     @Test
     void shouldExtractAuthenticationFromValidTokenTest() {
+        //Arrange
         when(userDetailsService.loadUserByUsername("User")).thenReturn(userDetails);
 
+        //Act
         Authentication extractedAuthentication = jwtService.extractAuthentication(validToken);
 
+        //Assert
         assertNotNull(extractedAuthentication);
         assertEquals(userDetails, extractedAuthentication.getPrincipal());
     }
 
     @Test
     void shouldExtractUsernameFromValidTokenTest() {
+        //Act
         String username = jwtService.extractUsername(validToken);
 
+        //Assert
         assertEquals("User", username);
     }
 
     @Test
     void shouldThrowExceptionForInvalidTokenWhenExtractingClaimsTest() {
+        //Assert
         assertThrows(JwtException.class, () -> jwtService.extractUsername(invalidToken));
     }
 }

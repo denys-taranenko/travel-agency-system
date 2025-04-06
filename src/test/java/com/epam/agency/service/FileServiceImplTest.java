@@ -1,14 +1,14 @@
 package com.epam.agency.service;
 
-import com.epam.finaltask.dto.OrderDTO;
-import com.epam.finaltask.dto.UserDTO;
-import com.epam.finaltask.dto.VoucherDTO;
+import com.epam.agency.dto.OrderDTO;
+import com.epam.agency.dto.UserDTO;
+import com.epam.agency.dto.VoucherDTO;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -18,11 +18,10 @@ import org.thymeleaf.context.Context;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class FileServiceImplTest {
 
     @Mock
@@ -43,13 +42,9 @@ class FileServiceImplTest {
     @InjectMocks
     private FileServiceImpl fileService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void testGenerateOrderPdfTest() throws Exception {
+    void generateOrderPdfTest() throws Exception {
+        //Arrange
         String orderId = "123";
         OrderDTO order = new OrderDTO();
         order.setUserId("1");
@@ -67,26 +62,31 @@ class FileServiceImplTest {
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
+        //Act
         fileService.generateOrderPdf(orderId, response);
 
+        //Assert
         assertEquals(MediaType.APPLICATION_PDF_VALUE, response.getContentType());
         assertEquals("inline; filename=order_123.pdf", response.getHeader(HttpHeaders.CONTENT_DISPOSITION));
         assertNotNull(response.getOutputStream());
     }
 
     @Test
-    void testGenerateOrderPdfThrowsExceptionTest() throws Exception {
+    void generateOrderPdfThrowsExceptionTest() {
         String orderId = "123";
         when(orderService.getOrderById(orderId)).thenThrow(new RuntimeException("Order not found"));
         assertThrows(RuntimeException.class, () -> fileService.generateOrderPdf(orderId, response));
     }
 
     @Test
-    void testGetAvailableAvatarsTest() {
+    void getAvailableAvatarsTest() {
+        //Arrange
         File avatarsDir = mock(File.class);
         when(avatarsDir.list(any())).thenReturn(new String[]{"cat.png", "bear.png", "default-avatar.png", "dog.png", "rabbit.png"});
 
-        FileServiceImpl fileService = new FileServiceImpl(null, null, null, null) {
+        FileServiceImpl fileService = new FileServiceImpl(templateEngine, orderService, userService, voucherService) {
+
+            //Act
             @Override
             public String[] getAvailableAvatars() {
                 return avatarsDir.list((dir, name) -> name.endsWith(".png") || name.endsWith(".jpg"));
@@ -94,6 +94,8 @@ class FileServiceImplTest {
         };
 
         String[] avatars = fileService.getAvailableAvatars();
+
+        //Assert
         assertNotNull(avatars);
         assertEquals(5, avatars.length);
         assertTrue(avatars[0].endsWith(".png") || avatars[0].endsWith(".jpg"));
