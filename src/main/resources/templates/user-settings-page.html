@@ -82,13 +82,14 @@
                          th:errors="*{phoneNumber}"></div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3" th:if="${user.provider} == 'TravelAgency'">
                     <label for="email" class="form-label">
                         <i class="bi bi-envelope"></i>
                         <span th:text="#{thymeleaf.user.email}">Email</span>
                     </label>
 
-                    <input type="email" class="form-control" id="email" name="email"
+                    <input
+                           type="email" class="form-control" id="email" name="email"
                            th:placeholder="#{thymeleaf.user.new.email}"
                            th:value="${user.email}">
                     <div th:if="${#fields.hasErrors('email')}" class="text-danger small" th:errors="*{email}"></div>
